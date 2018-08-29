@@ -1,0 +1,60 @@
+#!/bin/bash
+
+
+
+
+# Main body of script 
+######
+
+if [[ "$#" -lt 2 ]]; then
+	echo "invalid number of arguments"
+	echo "Usage: dirclean [--test] ROOT_DIRECTORY PATTERN..."
+	exit 1;
+fi
+
+
+
+######Check to see if test option used
+######If used shift arguments otherwise 
+######evaluate as normal
+
+if [[ "$1" == --test ]]; then
+	echo "Test option selected..."
+	shift
+	TESTING=true
+		
+elif [[ "$1" != --test ]]; then
+	echo "Test option not selected..."
+	TESTING=false
+fi
+
+######Check if target directory exists
+######Exit with error if it does not exist
+if [[ ! -d "$1" ]]; then
+	echo ROOT_DIRECTORY argument is not a valid directory: "$PWD/$1" 
+	exit 1
+fi
+######Beginning of file removal/testing section
+######Testing and removal will be two seperate parts
+cd $1
+shift
+
+for file in .* *; do
+	if [[ -f "$file" ]]; then
+		for ((i = 1; i <= $#; i++)); do
+			if [[ "$file" == ${!i} ]]; then
+				if [[ "$TESTING" == true ]]; then
+					echo "$PWD/$file" "would be deleted"
+				elif [[ "$TESTING" == false ]]; then
+					echo 'Deleting file:' "$PWD/$file"
+					rm -f $file
+				fi
+			fi
+		done
+	fi
+done
+
+
+
+
+exit 0;
