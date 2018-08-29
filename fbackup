@@ -1,0 +1,39 @@
+#!/bin/bash
+# backup script
+
+######
+#Checks for proper arguments
+######
+if [ "$#" -ne 2 ]; then 
+	echo "illegal number of parameters"
+	exit 1
+fi
+
+
+######
+#Checks is target directory exists if not makes it 
+######
+if [[ ! -d "$2" ]]; then
+	mkdir "$2"
+fi
+TARGET_DIR="$2"
+ROOT_DIR=$(pwd)
+echo "$ROOT_DIR"
+cd $1
+
+
+for file in * .*; do 
+	if [[ -f "$file" ]]; then
+		if  [[ ! -f "$ROOT_DIR/$TARGET_DIR"/"$file".bak ]]; then
+			echo "$file will be copied to " "$2"
+			cp "$file" "$file".bak
+			mv "$file".bak "$ROOT_DIR/$2" 
+		else
+			echo "$file already exists in backup directory, skipping.."
+		fi
+		
+	fi
+done
+ 
+
+exit 0
